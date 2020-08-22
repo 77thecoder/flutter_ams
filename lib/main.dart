@@ -69,9 +69,6 @@ class _LoginPageState extends State<LoginPage> {
         }
         return null;
       },
-      onChanged: (text) {
-        print('ssdsd ${text}');
-      },
     );
 
     final _passwordField = TextFormField(
