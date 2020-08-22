@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
+import "dart:async";
 
 class LoginPage extends StatefulWidget {
   final String title;
@@ -14,6 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController loginController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -75,13 +78,28 @@ class _LoginPageState extends State<LoginPage> {
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {
+        onPressed: () async {
+          print('click');
+          setState(() {
+            _isLoading = !_isLoading;
+          });
+
           if (_formKey.currentState.validate()) {
-            print('login ' + loginController.text);
-            print('password ' + passwordController.text);
+            await new Future.delayed(const Duration(seconds : 5));
+            print('end pause');
+            setState(() {
+              _isLoading = !_isLoading;
+            });
           }
         },
-        child: Text(
+        child: _isLoading ? Container(
+          width: 25,
+          height: 25,
+          child: LoadingIndicator(
+            indicatorType: Indicator.ballClipRotate,
+            color: Colors.white,
+          ),
+        ) : Text(
           'Login',
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
