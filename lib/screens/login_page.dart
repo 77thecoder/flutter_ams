@@ -21,12 +21,19 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   bool _isDisableButton = false;
   bool _isAuth = true;
+  bool _obscureText = true;
 
   @override
   void dispose() {
     loginController.dispose();
     passwordController.dispose();
     super.dispose();
+  }
+
+  void _obscureClick() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
   }
 
   @override
@@ -54,11 +61,23 @@ class _LoginPageState extends State<LoginPage> {
 
     final _passwordField = TextFormField(
       controller: passwordController,
-      obscureText: true,
+      obscureText: _obscureText,
       style: Theme.of(context).textTheme.bodyText1,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         hintText: 'Password',
+        suffixIcon: Padding(
+          padding: EdgeInsets.only(top: 15.0),
+          child: GestureDetector(
+            onTap: () {
+              _obscureClick();
+            },
+            child: Icon(
+              _obscureText ? Icons.visibility : Icons.visibility_off,
+              color: Color(0xff7C7C7C),
+           ),
+          )
+        ),
         border: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(32.0),
         ),
