@@ -36,9 +36,22 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController loginController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+
+  @override
+  void dispose() {
+    loginController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final _loginField = TextField(
+    final _loginField = TextFormField(
+      controller: loginController,
       obscureText: false,
       style: Theme.of(context).textTheme.bodyText1,
       decoration: InputDecoration(
@@ -50,9 +63,19 @@ class _LoginPageState extends State<LoginPage> {
           borderRadius: BorderRadius.circular(32.0),
         ),
       ),
+      validator: (value) {
+        if (value.isEmpty) {
+          return 'Заполните поле Login';
+        }
+        return null;
+      },
+      onChanged: (text) {
+        print('ssdsd ${text}');
+      },
     );
 
-    final _passwordField = TextField(
+    final _passwordField = TextFormField(
+      controller: passwordController,
       obscureText: true,
       style: Theme.of(context).textTheme.bodyText1,
       decoration: InputDecoration(
@@ -66,6 +89,12 @@ class _LoginPageState extends State<LoginPage> {
           borderRadius: BorderRadius.circular(32.0),
         ),
       ),
+      validator: (value) {
+        if (value.isEmpty) {
+          return 'Заполните поле Password';
+        }
+        return null;
+      },
     );
 
     final _loginButton = Material(
@@ -75,7 +104,12 @@ class _LoginPageState extends State<LoginPage> {
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {},
+        onPressed: () {
+          if (_formKey.currentState.validate()) {
+            print('login ' + loginController.text);
+            print('password ' + passwordController.text);
+          }
+        },
         child: Text(
           'Login',
           textAlign: TextAlign.center,
@@ -88,28 +122,31 @@ class _LoginPageState extends State<LoginPage> {
       body: Center(
         child: SingleChildScrollView(child: Container(
           color: Colors.white,
-          child: Padding(
-            padding: EdgeInsets.all(36.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: 80.0,
-                  child: Image.asset(
-                    'assets/images/logo_nvbs.png',
-                    fit: BoxFit.contain,
+          child: Form(
+            key: _formKey,
+            child: Padding(
+              padding: EdgeInsets.all(36.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: 80.0,
+                    child: Image.asset(
+                      'assets/images/logo_nvbs.png',
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                ),
-                SizedBox(height: 45.0,),
-                _loginField,
-                SizedBox(height: 25.0,),
-                _passwordField,
-                SizedBox(height: 35.0,),
-                _loginButton,
-                SizedBox(height: 15.0,),
-              ],
-            ),
+                  SizedBox(height: 45.0,),
+                  _loginField,
+                  SizedBox(height: 25.0,),
+                  _passwordField,
+                  SizedBox(height: 35.0,),
+                  _loginButton,
+                  SizedBox(height: 15.0,),
+                ],
+              ),
+            )
           ),
         )),
       ),
