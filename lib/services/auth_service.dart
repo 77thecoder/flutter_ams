@@ -6,7 +6,7 @@ import 'package:nvbs_ams/models/user.dart';
 class AuthService {
   final String API_URL = 'http://api.nvbs.ru/api';
 
-  Future<String> authAD(String login, String password) async {
+  Future<bool> authAD(String login, String password) async {
     print('account $login $password');
     http.Response response;
 
@@ -24,8 +24,9 @@ class AuthService {
 //    user['isAuth'] = user['isAuth'].toString();
     if (response.statusCode == 200) {
       User.fromJson(json.decode(response.body));
+      return true;
+    } else {
+      return false;
     }
-
-    return response.body;
   }
 }

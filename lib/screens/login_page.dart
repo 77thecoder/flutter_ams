@@ -20,6 +20,7 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _isLoading = false;
   bool _isDisableButton = false;
+  bool _isAuth = true;
 
   @override
   void dispose() {
@@ -89,11 +90,12 @@ class _LoginPageState extends State<LoginPage> {
 
           if (_formKey.currentState.validate()) {
             AuthService auth = new AuthService();
-            String response = await auth.authAD(loginController.text, passwordController.text);
-//            response.then((value) => print('result: $value'));
+            bool response = await auth.authAD(loginController.text, passwordController.text);
 
-            print(response);
+            bool isAuth = response ? true : false;
+
             setState(() {
+              _isAuth = isAuth;
               _isLoading = !_isLoading;
               _isDisableButton = !_isDisableButton;
             });
@@ -144,6 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: 25.0,),
                     _passwordField,
                     SizedBox(height: 35.0,),
+                    ErrorAuth(_isAuth),
                     _loginButton,
                     SizedBox(height: 15.0,),
                   ],
@@ -153,5 +156,30 @@ class _LoginPageState extends State<LoginPage> {
         )),
       ),
     );
+  }
+}
+
+class ErrorAuth extends StatelessWidget {
+  final bool _isAuth;
+
+  ErrorAuth(this._isAuth);
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isAuth) {
+      return SizedBox(height: 1,);
+    } else {
+      return Padding(
+        padding: EdgeInsets.only(bottom: 20),
+          child: Text(
+            'Неправильный логин или пароль',
+            style: TextStyle(
+              color: Colors.red,
+              fontWeight: FontWeight.bold
+            ),
+        )
+      );
+    }
+//    return _isAuth ? SizedBox(height: 1,) : Text('Неправильный логин или пароль', style: TextStyle(color: Colors.red),);
   }
 }
