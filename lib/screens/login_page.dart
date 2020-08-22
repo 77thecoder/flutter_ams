@@ -17,6 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
 
   bool _isLoading = false;
+  bool _isDisableButton = false;
 
   @override
   void dispose() {
@@ -78,17 +79,18 @@ class _LoginPageState extends State<LoginPage> {
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () async {
-          print('click');
+        onPressed: _isDisableButton ? null : () async {
           setState(() {
             _isLoading = !_isLoading;
+            _isDisableButton = !_isDisableButton;
           });
 
           if (_formKey.currentState.validate()) {
             await new Future.delayed(const Duration(seconds : 5));
-            print('end pause');
+
             setState(() {
               _isLoading = !_isLoading;
+              _isDisableButton = !_isDisableButton;
             });
           }
         },
