@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import "dart:async";
+import 'package:nvbs_ams/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   final String title;
@@ -86,8 +88,16 @@ class _LoginPageState extends State<LoginPage> {
           });
 
           if (_formKey.currentState.validate()) {
-            await new Future.delayed(const Duration(seconds : 5));
+            AuthService auth = new AuthService();
+            String response = await auth.authAD(loginController.text, passwordController.text);
+//            response.then((value) => print('result: $value'));
 
+            print(response);
+            setState(() {
+              _isLoading = !_isLoading;
+              _isDisableButton = !_isDisableButton;
+            });
+          } else {
             setState(() {
               _isLoading = !_isLoading;
               _isDisableButton = !_isDisableButton;
@@ -104,7 +114,8 @@ class _LoginPageState extends State<LoginPage> {
         ) : Text(
           'Login',
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.bodyText1
+              .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
     );
