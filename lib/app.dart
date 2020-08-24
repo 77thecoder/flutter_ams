@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:nvbs_ams/screens/home_page.dart';
 import 'package:nvbs_ams/screens/login_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyApp extends StatelessWidget {
+  Future<String> _initialRoute() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.getBool('user.isAuth') ? '/home' : '/';
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -14,7 +21,11 @@ class MyApp extends StatelessWidget {
           bodyText1: TextStyle(fontFamily: 'Montserrat', fontSize: 20.0),
         ),
       ),
-      home: LoginPage(title: 'НВБС АМС'),
+      routes: {
+        '/': (context) => LoginPage(),
+        '/home': (context) => HomePage()
+      },
+      initialRoute: _initialRoute().toString(),
     );
   }
 }

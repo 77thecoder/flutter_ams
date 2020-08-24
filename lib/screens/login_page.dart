@@ -3,11 +3,10 @@ import 'package:http/http.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import "dart:async";
 import 'package:nvbs_ams/services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
-  final String title;
-
-  LoginPage({ Key key, this.title }) : super(key: key);
+  LoginPage({ Key key }) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -22,6 +21,20 @@ class _LoginPageState extends State<LoginPage> {
   bool _isDisableButton = false;
   bool _isAuth = true;
   bool _obscureText = true;
+
+
+  @override
+  void initState() {
+    _checkAuth();
+  }
+
+  void _checkAuth() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool("user.isAuth") == true) {
+      Navigator.pushNamed(context, '/home');
+    }
+  }
+
 
   @override
   void dispose() {
@@ -118,6 +131,7 @@ class _LoginPageState extends State<LoginPage> {
               _isLoading = !_isLoading;
               _isDisableButton = !_isDisableButton;
             });
+            Navigator.pushNamed(context, '/home');
           } else {
             setState(() {
               _isLoading = !_isLoading;

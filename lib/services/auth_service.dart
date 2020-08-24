@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:nvbs_ams/models/user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   final String API_URL = 'http://api.nvbs.ru/api';
 
   Future<bool> authAD(String login, String password) async {
-    print('account $login $password');
     http.Response response;
 
     try {
@@ -16,17 +16,30 @@ class AuthService {
         body: {'login': login, 'password': password},
       );
     } catch (error) {
-      return error;
+      return false;
     }
 
     Map<String, dynamic> user = jsonDecode(response.body);
-    print(user);
-//    user['isAuth'] = user['isAuth'].toString();
     if (response.statusCode == 200) {
-      User.fromJson(json.decode(response.body));
+      User user = User.fromJson(json.decode(response.body));
+      _saveUser(user);
       return true;
     } else {
       return false;
     }
+  }
+
+  /// Сохраняем инфу о юзеру в локальное хранилище
+  void _saveUser(User user) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setBool('user.isAuth', user.getIsAuth);
+    prefs.setString('user.login', user.getLogin);
+    prefs.setString('user.tn', user.getTN);
+    prefs.setString('user.fio', user.getFIO);
+    prefs.setString('user.phones', user.getPhones);
+    prefs.setString('user.email', user.getEmail);
+    prefs.setString('user.position', user.getPosition);
+    prefs.setString('user.department', user.getDepartment);
   }
 }

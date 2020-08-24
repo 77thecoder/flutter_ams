@@ -31,4 +31,13 @@ class User {
       Department: json['Department']
     );
   }
+
+  bool get getIsAuth => isAuth;
+  String get getLogin => login;
+  String get getFIO => FIO;
+  String get getTN => TN;
+  String get getPhones => phones;
+  String get getEmail => Email;
+  String get getPosition => Position;
+  String get getDepartment => Department;
 }
