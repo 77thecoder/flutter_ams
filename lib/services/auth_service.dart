@@ -5,7 +5,7 @@ import 'package:nvbs_ams/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  final String API_URL = 'http://api.nvbs.ru/api';
+  static const String API_URL = 'http://api.nvbs.ru/api';
 
   Future<bool> authAD(String login, String password) async {
     http.Response response;
@@ -19,7 +19,6 @@ class AuthService {
       return false;
     }
 
-    Map<String, dynamic> user = jsonDecode(response.body);
     if (response.statusCode == 200) {
       User user = User.fromJson(json.decode(response.body));
       _saveUser(user);

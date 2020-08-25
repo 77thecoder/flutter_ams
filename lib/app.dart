@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class MyApp extends StatelessWidget {
   Future<String> _initialRoute() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    return pref.getBool('user.isAuth') ? '/home' : '/';
+    return pref.getBool('user.isAuth') == null ? '/' : '/home';
   }
 
   @override
