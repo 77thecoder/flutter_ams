@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nvbs_ams/widgets/profile.dart';
 
-class HomePage extends StatelessWidget {
+class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +22,9 @@ class HomePage extends StatelessWidget {
           )
         ],
       ),
-      body: Profile(),
+      body: Center(
+        child: Text('profile'),
+      ),
     );
   }
 }
