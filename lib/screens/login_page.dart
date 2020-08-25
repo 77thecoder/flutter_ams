@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:nvbs_ams/screens/profile_page.dart';
 import 'package:nvbs_ams/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -129,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
               _isLoading = !_isLoading;
               _isDisableButton = !_isDisableButton;
             });
-            Navigator.pushNamed(context, '/home');
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
           } else {
             setState(() {
               _isLoading = !_isLoading;
