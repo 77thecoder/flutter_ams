@@ -22,18 +22,12 @@ class _LoginPageState extends State<LoginPage> {
   bool _obscureText = true;
 
 
-  @override
-  void initState() {
-    _checkAuth();
-  }
-
   void _checkAuth() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getBool("user.isAuth") == true) {
-      Navigator.pushNamed(context, '/home');
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
     }
   }
-
 
   @override
   void dispose() {
@@ -50,6 +44,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    _checkAuth();
+
     final _loginField = TextFormField(
       controller: loginController,
       obscureText: false,
