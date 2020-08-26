@@ -18,7 +18,7 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _isLoading = false;
   bool _isDisableButton = false;
-  bool _isAuth = true;
+  bool _isAuth;
   bool _obscureText = true;
 
 
@@ -117,16 +117,20 @@ class _LoginPageState extends State<LoginPage> {
 
           if (_formKey.currentState.validate()) {
             AuthService auth = new AuthService();
-            bool response = await auth.authAD(loginController.text, passwordController.text);
+            Future<bool> response = auth.authAD(loginController.text, passwordController.text);
 
-            bool isAuth = response ? true : false;
-
-            setState(() {
-              _isAuth = isAuth;
-              _isLoading = !_isLoading;
-              _isDisableButton = !_isDisableButton;
+            response.then((value) {
+              bool isAuth = value ? true : false;
+              setState(() {
+                _isAuth = isAuth;
+                _isLoading = !_isLoading;
+                _isDisableButton = !_isDisableButton;
+              });
+              if (isAuth) {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ProfilePage()));
+              }
             });
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
           } else {
             setState(() {
               _isLoading = !_isLoading;
@@ -174,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: 25.0,),
                     _passwordField,
                     SizedBox(height: 35.0,),
-                    ErrorAuth(_isAuth),
+                    _isAuth == null ? Text('') : ErrorAuth(_isAuth),
                     _loginButton,
                     SizedBox(height: 15.0,),
                   ],

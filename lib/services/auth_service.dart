@@ -9,6 +9,7 @@ class AuthService {
 
   Future<bool> authAD(String login, String password) async {
     http.Response response;
+    bool result;
 
     try {
       response = await http.post(
@@ -16,16 +17,18 @@ class AuthService {
         body: {'login': login, 'password': password},
       );
     } catch (error) {
-      return false;
+      result = false;
     }
 
     if (response.statusCode == 200) {
       User user = User.fromJson(json.decode(response.body));
       _saveUser(user);
-      return true;
+      result = true;
     } else {
-      return false;
+      result = false;
     }
+
+    return Future<bool>.value(result);
   }
 
   /// Сохраняем инфу о юзеру в локальное хранилище
