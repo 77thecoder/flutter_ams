@@ -9,6 +9,7 @@ class DrawerApp extends StatelessWidget {
       child: ListView(
         children: <Widget>[
           ListTile(
+            leading: Icon(Icons.group),
             title: Text('Подчиненные'),
             onTap: () {
               //
@@ -16,6 +17,7 @@ class DrawerApp extends StatelessWidget {
           ),
           Divider(),
           ListTile(
+            leading: Icon(Icons.group),
             title: Text('Выйти'),
             onTap: () {
               Future<bool> exit = AppService.exit();
