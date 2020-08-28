@@ -5,6 +5,7 @@ import 'package:nvbs_ams/widgets/drawer.dart';
 import 'package:nvbs_ams/services/exit.dart';
 import 'package:nvbs_ams/services/ams_request.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key key}) : super(key: key);
@@ -15,7 +16,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool _isLoadingData = false;
-  UserInfo userInfo;
+  UserInfo _userInfo;
 
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
@@ -36,7 +37,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _getUserInfo() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    userInfo = UserInfo.fromJson(pref.get('userInfo'));
+    String jsonData = pref.get('userInfo');
+    _userInfo = await UserInfo.fromJson(json.decode(jsonData));
   }
 
   @override
@@ -69,7 +71,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ],
       ),
       body: Center(
-        child: _isLoadingData ? Profile(userInfo) : CircularProgressIndicator(
+        child: _isLoadingData ? Profile(_userInfo) : CircularProgressIndicator(
           backgroundColor: Colors.red,
           valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
         ),
@@ -78,8 +80,12 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-Widget Profile (userInfo) {
-  return Center(
-    child: Text(userInfo.jobStatus),
+Widget Profile (UserInfo userInfo) {
+
+  return Column(
+    children: <Widget>[
+        Text(userInfo.users.first.jobStatus),
+        Text(userInfo.users.first.fio),
+    ],
   );
 }

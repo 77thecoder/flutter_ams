@@ -20,6 +20,7 @@ class AMSRequest {
 
     UserInfo userInfo = UserInfo.fromJson(json.decode(utf8.decode(response.bodyBytes)));
     SharedPreferences pref = await SharedPreferences.getInstance();
+    print('userInfo ' + json.encode(userInfo));
     pref.setString('userInfo', json.encode(userInfo));
     return Future<bool>.value(true);
   }
