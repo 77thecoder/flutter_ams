@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:nvbs_ams/models/user_info.dart';
 import 'package:nvbs_ams/screens/login_page.dart';
 import 'package:nvbs_ams/widgets/drawer.dart';
 import 'package:nvbs_ams/services/exit.dart';
 import 'package:nvbs_ams/services/ams_request.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key key}) : super(key: key);
@@ -13,6 +15,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool _isLoadingData = false;
+  UserInfo userInfo;
 
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
@@ -21,10 +24,19 @@ class _ProfilePageState extends State<ProfilePage> {
     Future<bool> data = ams.getInfoUser();
 
     data.then((value) {
-      setState(() {
-        _isLoadingData = value;
-      });
+      if (value) {
+        _getUserInfo();
+
+        setState(() {
+          _isLoadingData = value;
+        });
+      }
     });
+  }
+
+  void _getUserInfo() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    userInfo = UserInfo.fromJson(pref.get('userInfo'));
   }
 
   @override
@@ -57,11 +69,17 @@ class _ProfilePageState extends State<ProfilePage> {
         ],
       ),
       body: Center(
-        child: _isLoadingData ? Text('profile') : CircularProgressIndicator(
+        child: _isLoadingData ? Profile(userInfo) : CircularProgressIndicator(
           backgroundColor: Colors.red,
           valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
         ),
       ),
     );
   }
+}
+
+Widget Profile (userInfo) {
+  return Center(
+    child: Text(userInfo.jobStatus),
+  );
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
+import 'package:nvbs_ams/models/user_info.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AMSRequest {
   Future<bool> send(url) async {
@@ -17,18 +18,14 @@ class AMSRequest {
       return Future<bool>.value(false);
     }
 
-    print('response ' + response.body.toString());
-  }
-
-  static Future<bool> getSubordinates() async {
-    http.Response response;
-
-
+    UserInfo userInfo = UserInfo.fromJson(json.decode(utf8.decode(response.bodyBytes)));
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setString('userInfo', json.encode(userInfo));
     return Future<bool>.value(true);
   }
 
   Future<bool> getInfoUser() async {
-    bool s = await send('https://itil.nvbs.ru/AMS_NVBS/hs/UserAccess/GetUserData/AMUR?Variant=0&Login=DKostin&TotalInformation=1&Subordinates=1');
-    return Future<bool>.value(true);
+    bool result = await send('https://itil.nvbs.ru/AMS_NVBS/hs/UserAccess/GetUserData/AMUR?Variant=0&Login=DKostin&TotalInformation=1&Subordinates=1');
+    return Future<bool>.value(result);
   }
 }
