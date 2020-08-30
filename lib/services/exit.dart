@@ -11,6 +11,7 @@ class AppService {
     prefs.remove('user.email');
     prefs.remove('user.position');
     prefs.remove('user.department');
+    prefs.remove('userInfo');
     return true;
   }
 }

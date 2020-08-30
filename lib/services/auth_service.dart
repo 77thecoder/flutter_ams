@@ -44,4 +44,11 @@ class AuthService {
     prefs.setString('user.position', user.getPosition);
     prefs.setString('user.department', user.getDepartment);
   }
+
+  /// Проверяем авторизован пользователь или нет
+  static Future<bool> checkAuth() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool isAuth = prefs.getBool('user.isAuth');
+    return Future<bool>.value(isAuth);
+  }
 }

@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:nvbs_ams/models/user_info.dart';
 import 'package:nvbs_ams/screens/login_page.dart';
+import 'package:nvbs_ams/services/auth_service.dart';
 import 'package:nvbs_ams/widgets/drawer.dart';
 import 'package:nvbs_ams/services/exit.dart';
 import 'package:nvbs_ams/services/ams_request.dart';
@@ -17,6 +20,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   bool _isLoadingData = false;
   UserInfo _userInfo;
+  Future<bool> isAuth;
 
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
@@ -81,11 +85,53 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
 Widget Profile (UserInfo userInfo) {
-
   return Column(
     children: <Widget>[
-        Text(userInfo.users.first.jobStatus),
-        Text(userInfo.users.first.fio),
+      Container(
+        width: 100,
+        height: 100,
+        child: Avatar(idUser: userInfo.users.first.id),
+      ),
+      Text(userInfo.users.first.jobStatus),
+      Text(userInfo.users.first.fio),
     ],
   );
 }
+
+class Avatar extends StatefulWidget {
+  final String idUser;
+
+  const Avatar({this.idUser, Key key}) : super(key: key);
+
+  @override
+  _AvatarState createState() => _AvatarState();
+}
+
+class _AvatarState extends State<Avatar> {
+  String image;
+  String _base64;
+
+  @override
+  void initState() {
+    _getImageUser(widget.idUser);
+  }
+
+  Future<String> _getImageUser(_idIser) async {
+    AMSRequest ams = new AMSRequest();
+    String imageBase64 = await ams.getImageUser(_idIser);
+
+    setState(() {
+      _base64 = imageBase64;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_base64 == null)
+      return new Container();
+
+    Uint8List bytes = base64.decode(_base64);
+    return new Image.memory(bytes);
+  }
+}
+
