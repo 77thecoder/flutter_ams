@@ -85,35 +85,44 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
 Widget Profile (UserInfo userInfo) {
-  return Row(
-    children: <Widget>[
-      Column(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(15),
-            child: Container(
-              width: 80,
-              height: 80,
-              child: Avatar(idUser: userInfo.users.first.id),
-            ),
-          ),
-
-        ],
-      ),
-      Column(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(10),
-            child: Column(
+  return Center(
+    child: Column(
+      children: <Widget>[
+        Row(
+          children: <Widget>[
+            Column(
               children: <Widget>[
-                Text(userInfo.users.first.surname + ' ' + userInfo.users.first.name),
-                Text(userInfo.users.first.patronymic),
+                Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Container(
+                    width: 80,
+                    height: 80,
+                    child: Avatar(idUser: userInfo.users.first.id),
+                  ),
+                ),
+
               ],
             ),
-          ),
-
-        ],
-      ),
-    ]
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.all(8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      userInfo.users.first.fio,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 8,),
+                    Text(userInfo.users.first.jobStatus),
+                  ],
+                ),
+              ),
+            ),
+          ]
+        )
+      ],
+    ),
   );
 }
