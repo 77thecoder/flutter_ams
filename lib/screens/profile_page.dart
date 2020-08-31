@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:nvbs_ams/models/user_info.dart';
 import 'package:nvbs_ams/screens/login_page.dart';
@@ -9,6 +7,7 @@ import 'package:nvbs_ams/widgets/drawer.dart';
 import 'package:nvbs_ams/services/exit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:nvbs_ams/widgets/my_list_view.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key key}) : super(key: key);
@@ -121,8 +120,12 @@ Widget Profile (UserInfo userInfo) {
               ),
             ),
           ]
-        )
+        ),
+        Container(
+          child: MyListView(userInfo: userInfo),
+        ),
       ],
     ),
   );
 }
+
