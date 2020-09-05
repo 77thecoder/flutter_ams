@@ -160,6 +160,13 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           setState(() {
             _isLoading = !_isLoading;
             _isDisableButton = !_isDisableButton;
+
+            _controllerLoginFalse.addListener(() => setState(() {}));
+            TickerFuture tickerFuture = _controllerLoginFalse.repeat(reverse: true);
+            tickerFuture.timeout(Duration(seconds:  1), onTimeout:  () {
+              _controllerLoginFalse.forward(from: 0);
+              _controllerLoginFalse.stop(canceled: true);
+            });
           });
 
           if (_formKey.currentState.validate()) {
@@ -171,13 +178,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 _isAuth = value;
                 _isLoading = !_isLoading;
                 _isDisableButton = !_isDisableButton;
-
-                _controllerLoginFalse.addListener(() => setState(() {}));
-                TickerFuture tickerFuture = _controllerLoginFalse.repeat(reverse: true);
-                tickerFuture.timeout(Duration(seconds:  1), onTimeout:  () {
-                  _controllerLoginFalse.forward(from: 0);
-                  _controllerLoginFalse.stop(canceled: true);
-                });
               });
 
               if (_isAuth) {
