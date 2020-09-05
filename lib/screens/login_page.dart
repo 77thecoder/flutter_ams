@@ -11,17 +11,23 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController loginController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  AnimationController _controllerLoginTrue;
+  AnimationController _controllerLoginFalse;
+
+  Animation<Offset> _loginFalseAnimation;
+  Animation<Offset> _loginTrueAnimation;
+  Animation<Offset> _loginFormAnimation;
 
   bool _isLoading = false;
   bool _isDisableButton = false;
   bool _isAuth;
   bool _obscureText = true;
 
-
+  // Проверяем аутентифицирован юзер или нет
   void _checkAuth() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getBool("user.isAuth") == true) {
@@ -30,9 +36,52 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    _checkAuth();
+
+    _controllerLoginFalse = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    );
+
+    _controllerLoginTrue = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    )..view;
+
+    _loginFalseAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(1, 0.0),
+    ).animate(CurvedAnimation(
+      parent: _controllerLoginFalse,
+      curve: Curves.elasticIn,
+    ));
+
+    _loginTrueAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(1.5, 0.0),
+    ).animate(CurvedAnimation(
+      parent: _controllerLoginTrue,
+      curve: Curves.easeOutSine,
+    ));
+
+    _loginFormAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(-1.5, 0.0),
+    ).animate(CurvedAnimation(
+      parent: _controllerLoginTrue,
+      curve: Curves.easeOutSine,
+    ));
+  }
+
+  @override
   void dispose() {
     loginController.dispose();
     passwordController.dispose();
+    _controllerLoginTrue.dispose();
+    _controllerLoginFalse.dispose();
     super.dispose();
   }
 
@@ -44,8 +93,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    _checkAuth();
-
     final _loginField = TextFormField(
       controller: loginController,
       obscureText: false,
@@ -120,15 +167,31 @@ class _LoginPageState extends State<LoginPage> {
             Future<bool> response = auth.authAD(loginController.text, passwordController.text);
 
             response.then((value) {
-              bool isAuth = value ? true : false;
               setState(() {
-                _isAuth = isAuth;
+                _isAuth = value;
                 _isLoading = !_isLoading;
                 _isDisableButton = !_isDisableButton;
+
+                _controllerLoginFalse.addListener(() => setState(() {}));
+                TickerFuture tickerFuture = _controllerLoginFalse.repeat(reverse: true);
+                tickerFuture.timeout(Duration(seconds:  1), onTimeout:  () {
+                  _controllerLoginFalse.forward(from: 0);
+                  _controllerLoginFalse.stop(canceled: true);
+                });
               });
-              if (isAuth) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProfilePage()));
+
+              if (_isAuth) {
+                _controllerLoginFalse.addListener(() => setState(() {}));
+                TickerFuture tickerFuture = _controllerLoginTrue.repeat(reverse: true);
+                tickerFuture.timeout(Duration(seconds:  2), onTimeout:  () {
+                  _controllerLoginTrue.forward(from: 0);
+                  _controllerLoginTrue.stop(canceled: true);
+                });
+
+                Future.delayed(const Duration(milliseconds: 800), () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ProfilePage()));
+                });
               }
             });
           } else {
@@ -145,11 +208,14 @@ class _LoginPageState extends State<LoginPage> {
             indicatorType: Indicator.ballClipRotate,
             color: Colors.white,
           ),
-        ) : Text(
-          'Login',
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyText1
-              .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+        ) : SlideTransition(
+          position: _loginFalseAnimation,
+          child: Text(
+            'Login',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyText1
+                .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
         ),
       ),
     );
@@ -159,31 +225,47 @@ class _LoginPageState extends State<LoginPage> {
         child: SingleChildScrollView(child: Container(
           color: Colors.white,
           child: Form(
-              key: _formKey,
-              child: Padding(
-                padding: EdgeInsets.all(36.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 80.0,
-                      child: Image.asset(
-                        'assets/images/logo_nvbs.png',
-                        fit: BoxFit.contain,
-                      ),
+            key: _formKey,
+            child: Padding(
+              padding: EdgeInsets.all(36.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: 80.0,
+                    child: Image.asset(
+                      'assets/images/logo_nvbs.png',
+                      fit: BoxFit.contain,
                     ),
-                    SizedBox(height: 45.0,),
-                    _loginField,
-                    SizedBox(height: 25.0,),
-                    _passwordField,
-                    SizedBox(height: 35.0,),
-                    _isAuth == null ? Text('') : ErrorAuth(_isAuth),
-                    _loginButton,
-                    SizedBox(height: 15.0,),
-                  ],
-                ),
-              )
+                  ),
+                  SizedBox(height: 45.0,),
+                  _isAuth != null && _isAuth ? SlideTransition(
+                    position: _loginFormAnimation,
+                    child: Column(
+                      children: <Widget>[
+                        _loginField,
+                        SizedBox(height: 25.0,),
+                        _passwordField,
+                      ],
+                    ),
+                  ) : Column(
+                    children: <Widget>[
+                      _loginField,
+                      SizedBox(height: 25.0,),
+                      _passwordField,
+                    ],
+                  ),
+                  SizedBox(height: 35.0,),
+                  _isAuth == null ? Text('') : ErrorAuth(_isAuth),
+                  _isAuth != null && _isAuth ? SlideTransition(
+                      position: _loginTrueAnimation,
+                      child: _loginButton,
+                  ) : _loginButton,
+                  SizedBox(height: 15.0,),
+                ],
+              ),
+            )
           ),
         )),
       ),
