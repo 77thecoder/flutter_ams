@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nvbs_ams/models/user_info.dart';
+import 'package:nvbs_ams/screens/map_page.dart';
+import 'package:nvbs_ams/screens/subordinates_page.dart';
 
 class MyListView extends StatelessWidget {
   UserInfo userInfo;
@@ -40,6 +42,7 @@ class MyListView extends StatelessWidget {
               ),
               onTap: () {
                 print('открываем страницу с картой');
+                Navigator.push(context, MaterialPageRoute(builder: (builder) => MapOffice()));
               },
             ),
             (userInfo.subordinates.length > 0)
@@ -52,6 +55,7 @@ class MyListView extends StatelessWidget {
                 ),
                 onTap: () {
                   print('открываем страницу с подчиненными');
+                  Navigator.push(context, MaterialPageRoute(builder: (builder) => SubordinatesPage()));
                 },
               )
               : Text(''),
