@@ -13,8 +13,15 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final TextEditingController loginController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  final snackBar = SnackBar(
+    content: Text('Неверный логин и пароль'),
+    backgroundColor: Color(0xffE30613),
+  );
+
   AnimationController _controllerLoginTrue;
   AnimationController _controllerLoginFalse;
 
@@ -89,6 +96,10 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     setState(() {
       _obscureText = !_obscureText;
     });
+  }
+
+  void showInSnackBar() {
+   _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   @override
@@ -192,6 +203,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => ProfilePage()));
                 });
+              } else {
+                showInSnackBar();
               }
             });
           } else {
@@ -221,6 +234,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
 
     return Scaffold(
+      key: _scaffoldKey,
       body: Center(
         child: SingleChildScrollView(child: Container(
           color: Colors.white,
@@ -257,7 +271,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                     ],
                   ),
                   SizedBox(height: 35.0,),
-                  _isAuth == null ? Text('') : ErrorAuth(_isAuth),
                   _isAuth != null && _isAuth ? SlideTransition(
                       position: _loginTrueAnimation,
                       child: _loginButton,
@@ -295,5 +308,19 @@ class ErrorAuth extends StatelessWidget {
       );
     }
 //    return _isAuth ? SizedBox(height: 1,) : Text('Неправильный логин или пароль', style: TextStyle(color: Colors.red),);
+  }
+}
+
+
+class CustomWidgets {
+  CustomWidgets._();
+  static buildErrorSnackbar(BuildContext context, String message) {
+    print('adfasdasd');
+    Scaffold.of(context)
+        .showSnackBar(
+      SnackBar(
+        content: Text("$message"),
+      ),
+    );
   }
 }
