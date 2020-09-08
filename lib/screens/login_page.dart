@@ -38,7 +38,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   void _checkAuth() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getBool("user.isAuth") == true) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage(login: prefs.getString('user.login'))));
     }
   }
 
@@ -201,7 +201,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
                 Future.delayed(const Duration(milliseconds: 800), () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ProfilePage()));
+                      MaterialPageRoute(builder: (context) => ProfilePage(login: loginController.text)));
                 });
               } else {
                 showInSnackBar();
@@ -315,7 +315,6 @@ class ErrorAuth extends StatelessWidget {
 class CustomWidgets {
   CustomWidgets._();
   static buildErrorSnackbar(BuildContext context, String message) {
-    print('adfasdasd');
     Scaffold.of(context)
         .showSnackBar(
       SnackBar(

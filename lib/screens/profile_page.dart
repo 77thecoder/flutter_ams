@@ -10,7 +10,9 @@ import 'dart:convert';
 import 'package:nvbs_ams/widgets/my_list_view.dart';
 
 class ProfilePage extends StatefulWidget {
-  ProfilePage({Key key}) : super(key: key);
+  String login;
+
+  ProfilePage({Key key, this.login}) : super(key: key);
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -23,9 +25,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
-  _ProfilePageState() {
+  _ProfilePageState() {}
+
+
+  @override
+  void initState() {
     AMSRequest ams = new AMSRequest();
-    Future<bool> data = ams.getInfoUser();
+    Future<bool> data = ams.getInfoUser(widget.login);
 
     data.then((value) {
       if (value) {

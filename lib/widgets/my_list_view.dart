@@ -41,7 +41,6 @@ class MyListView extends StatelessWidget {
                 size: 17,
               ),
               onTap: () {
-                print('открываем страницу с картой');
                 Navigator.push(context, MaterialPageRoute(builder: (builder) => MapOffice()));
               },
             ),

@@ -25,8 +25,8 @@ class AMSRequest {
     return Future<bool>.value(true);
   }
 
-  Future<bool> getInfoUser() async {
-    bool result = await sendUser('https://itil.nvbs.ru/AMS_NVBS/hs/UserAccess/GetUserData/AMUR?Variant=0&Login=DKostin&TotalInformation=1&Subordinates=1');
+  Future<bool> getInfoUser(String login) async {
+    bool result = await sendUser('https://itil.nvbs.ru/AMS_NVBS/hs/UserAccess/GetUserData/AMUR?Variant=0&Login=$login&TotalInformation=1&Subordinates=1');
     return Future<bool>.value(result);
   }
 
