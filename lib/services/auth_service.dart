@@ -5,7 +5,7 @@ import 'package:nvbs_ams/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  static const String API_URL = 'http://api.nvbs.ru/api';
+  static const String API_URL = 'url';
 
   Future<bool> authAD(String login, String password) async {
     http.Response response;
