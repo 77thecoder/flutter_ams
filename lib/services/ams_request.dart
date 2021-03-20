@@ -6,8 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AMSRequest {
   Future<bool> sendUser(url) async {
-    final String _amsLogin = 'EXCHANGE';
-    final String _amsPassword = 'J,vty82';
+    final String _amsLogin = 'login';
+    final String _amsPassword = 'password';
     final String basicAuth =
         'Basic ' + base64Encode(utf8.encode('$_amsLogin:$_amsPassword'));
 
@@ -26,13 +26,13 @@ class AMSRequest {
   }
 
   Future<bool> getInfoUser(String login) async {
-    bool result = await sendUser('https://itil.nvbs.ru/AMS_NVBS/hs/UserAccess/GetUserData/AMUR?Variant=0&Login=$login&TotalInformation=1&Subordinates=1');
+    bool result = await sendUser('url');
     return Future<bool>.value(result);
   }
 
   Future send(url) async {
-    final String _amsLogin = 'EXCHANGE';
-    final String _amsPassword = 'J,vty82';
+    final String _amsLogin = 'login';
+    final String _amsPassword = 'password';
     final String basicAuth =
         'Basic ' + base64Encode(utf8.encode('$_amsLogin:$_amsPassword'));
 
@@ -49,7 +49,7 @@ class AMSRequest {
 
 
   Future<String> getImageUser(String ID) async {
-    http.Response response = await send('https://itil.nvbs.ru/AMS_NVBS/hs/UserAccess/GetUserImage/AMUR/$ID');
+    http.Response response = await send('url');
     String _base64 = base64.encode(response.bodyBytes);
     return _base64;
   }
