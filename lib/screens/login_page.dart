@@ -185,6 +185,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             Future<bool> response = auth.authAD(loginController.text, passwordController.text);
 
             response.then((value) {
+              var a = 1;
               setState(() {
                 _isAuth = value;
                 _isLoading = !_isLoading;
